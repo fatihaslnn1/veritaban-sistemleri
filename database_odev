@@ -1,0 +1,81 @@
+CREATE TABLE Kullanıcılar (
+    KullanıcıID INT PRIMARY KEY AUTO_INCREMENT,
+    İsim VARCHAR(100) NOT NULL,
+    Soyisim VARCHAR(100) NOT NULL,
+    Cinsiyet ENUM('Erkek', 'Kadın', 'Belirtmek İstemiyor'),
+    TelefonNumarası VARCHAR(15),
+    Email VARCHAR(255) UNIQUE NOT NULL,
+    KayıtTarihi DATE DEFAULT CURRENT_DATE
+);
+
+CREATE TABLE Konumlar (
+    KonumID INT PRIMARY KEY AUTO_INCREMENT,
+    KullanıcıID INT,
+    Şehir VARCHAR(50) NOT NULL,
+    İlçe VARCHAR(100) NOT NULL,
+    Sokak VARCHAR(100),
+    BinaNo VARCHAR(10),
+    PostaKodu VARCHAR(10),
+    Ülke VARCHAR(50) DEFAULT 'Türkiye',
+    FOREIGN KEY (KullanıcıID) REFERENCES Kullanıcılar(KullanıcıID) ON DELETE CASCADE
+);
+
+CREATE TABLE Kütüphaneler (
+    KütüphaneID INT PRIMARY KEY AUTO_INCREMENT,
+    İsim VARCHAR(255) NOT NULL,
+    Açıklama TEXT
+);
+
+CREATE TABLE Eserler (
+    EserID INT PRIMARY KEY AUTO_INCREMENT,
+    Başlık VARCHAR(255) NOT NULL,
+    ISBN VARCHAR(20) UNIQUE NOT NULL,
+    SayfaSayısı INT,
+    YayınTarihi DATE
+);
+
+CREATE TABLE Yaratıcılar (
+    YaratıcıID INT PRIMARY KEY AUTO_INCREMENT,
+    İsim VARCHAR(100) NOT NULL,
+    Soyisim VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE Türler (
+    TürID INT PRIMARY KEY AUTO_INCREMENT,
+    TürAdı VARCHAR(100)
+);
+
+CREATE TABLE Ödünçler (
+    ÖdünçID INT PRIMARY KEY AUTO_INCREMENT,
+    KullanıcıID INT,
+    EserID INT,
+    AlınmaTarihi DATE,
+    GeriVermeTarihi DATE,
+    FOREIGN KEY (KullanıcıID) REFERENCES Kullanıcılar(KullanıcıID),
+    FOREIGN KEY (EserID) REFERENCES Eserler(EserID)
+);
+
+CREATE TABLE Eser_Tür (
+    EserID INT,
+    TürID INT,
+    PRIMARY KEY (EserID, TürID),
+    FOREIGN KEY (EserID) REFERENCES Eserler(EserID),
+    FOREIGN KEY (TürID) REFERENCES Türler(TürID)
+);
+
+CREATE TABLE Eser_Yaratıcı (
+    EserID INT,
+    YaratıcıID INT,
+    PRIMARY KEY (EserID, YaratıcıID),
+    FOREIGN KEY (EserID) REFERENCES Eserler(EserID),
+    FOREIGN KEY (YaratıcıID) REFERENCES Yaratıcılar(YaratıcıID)
+);
+
+CREATE TABLE Kütüphane_Eser (
+    KütüphaneID INT,
+    EserID INT,
+    Adet INT,
+    PRIMARY KEY (KütüphaneID, EserID),
+    FOREIGN KEY (KütüphaneID) REFERENCES Kütüphaneler(KütüphaneID),
+    FOREIGN KEY (EserID) REFERENCES Eserler(EserID)
+);
