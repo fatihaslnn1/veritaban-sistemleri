@@ -1,0 +1,55 @@
+4. soru
+-- Opel marka araçlar
+SELECT M.Madi, M.Msoyadi, 'Satış' AS Islem, S.Sat_tarih 
+FROM Musteri M 
+JOIN Satis S ON M.Mno = S.Mno 
+JOIN Arac A ON S.Aracno = A.Aracno 
+WHERE A.Marka LIKE 'Opel%'
+
+UNION
+
+SELECT M.Madi, M.Msoyadi, 'Alım' AS Islem, A1.Alim_tarih 
+FROM Musteri M 
+JOIN Alim A1 ON M.Mno = A1.Mno 
+JOIN Arac A ON A1.Aracno = A.Aracno 
+WHERE A.Marka LIKE 'Opel%';
+
+5. soru
+SELECT A.Marka, A.Model, A.Fiyat AS Arac_Fiyati, S.Sfiyat AS Satis_Fiyati
+FROM Arac A 
+JOIN Satis S ON A.Aracno = S.Aracno 
+WHERE A.Fiyat > 20000;
+
+6. soru
+SELECT M.Madres, SUM(S.Sfiyat) AS Toplam_Satis
+FROM Satis S
+JOIN Musteri M ON S.Mno = M.Mno
+WHERE M.Madres LIKE '%Turhal%' OR M.Madres LIKE '%Amasya%'
+GROUP BY M.Madres
+ORDER BY Toplam_Satis DESC;
+
+7. soru
+SELECT * 
+FROM Musteri M 
+WHERE M.Mno NOT IN (SELECT Mno FROM Satis)
+AND M.Mno NOT IN (SELECT Mno FROM Alim);
+
+8. soru
+SELECT M.Madi, M.Msoyadi, S.Sat_tarih 
+FROM Satis S
+JOIN Musteri M ON S.Mno = M.Mno
+WHERE MONTH(S.Sat_tarih) IN (5, 6);
+
+9. soru
+SELECT A.Marka, COUNT(DISTINCT Al.Mno) AS Musteri_Sayisi
+FROM Alim Al
+JOIN Arac A ON Al.Aracno = A.Aracno
+GROUP BY A.Marka
+HAVING COUNT(DISTINCT Al.Mno) > 1;
+
+10. soru
+SELECT A.Marka, S.Sfiyat, M.Madi, M.Msoyadi
+FROM Satis S
+JOIN Arac A ON S.Aracno = A.Aracno
+JOIN Musteri M ON S.Mno = M.Mno
+WHERE S.Sfiyat = (SELECT MAX(Sfiyat) FROM Satis);
